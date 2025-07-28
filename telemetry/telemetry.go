@@ -6,7 +6,7 @@ import (
 	"github.com/gruntwork-io/go-commons/telemetry"
 )
 
-var sendTelemetry = true
+var sendTelemetry = false
 var telemetryClient telemetry.MixpanelTelemetryTracker
 var cmd = ""
 var isCircleCi = false
