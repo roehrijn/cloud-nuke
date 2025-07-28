@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"github.com/gruntwork-io/cloud-nuke/util"
+	"slices"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -30,16 +31,19 @@ func (r *Route53HostedZone) getAll(c context.Context, configObj config.Config) (
 		}
 
 		tagsByZoneId := make(map[string][]types.Tag)
-		output, err := r.Client.ListTagsForResources(c, &route53.ListTagsForResourcesInput{
-			ResourceType: types.TagResourceTypeHostedzone,
-			ResourceIds:  zoneIds,
-		})
-		if err != nil {
-			logging.Errorf("[Failed] unable to list tags for hosted zones: %s", err)
-			return nil, err
-		}
-		for _, tagSet := range output.ResourceTagSets {
-			tagsByZoneId[*tagSet.ResourceId] = tagSet.Tags
+		// we need to chunk the zoneIds into groups of 10 because the ListTagsForResources API can only handle up to 10 resource IDs at a time
+		for chunk := range slices.Chunk(zoneIds, 10) {
+			output, err := r.Client.ListTagsForResources(c, &route53.ListTagsForResourcesInput{
+				ResourceType: types.TagResourceTypeHostedzone,
+				ResourceIds:  chunk,
+			})
+			if err != nil {
+				logging.Errorf("[Failed] unable to list tags for hosted zones: %s", err)
+				return nil, err
+			}
+			for _, tagSet := range output.ResourceTagSets {
+				tagsByZoneId[*tagSet.ResourceId] = tagSet.Tags
+			}
 		}
 
 		for _, zone := range result.HostedZones {
