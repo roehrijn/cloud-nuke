@@ -24,7 +24,7 @@ type EKSClustersAPI interface {
 // EKSClusters - Represents all EKS clusters found in a region
 type EKSClusters struct {
 	BaseAwsResource
-	Client   EKSClustersAPI
+	Client   *eks.Client
 	Region   string
 	Clusters []string
 }

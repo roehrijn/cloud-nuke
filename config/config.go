@@ -100,6 +100,7 @@ type Config struct {
 	OIDCProvider                    ResourceType                  `yaml:"OIDCProvider"`
 	OpenSearchDomain                ResourceType                  `yaml:"OpenSearchDomain"`
 	Redshift                        ResourceType                  `yaml:"Redshift"`
+	ResourceShare                   ResourceType                  `yaml:"ResourceShare"`
 	RdsSnapshot                     ResourceType                  `yaml:"RdsSnapshot"`
 	RdsParameterGroup               ResourceType                  `yaml:"RdsParameterGroup"`
 	RdsProxy                        ResourceType                  `yaml:"RdsProxy"`
